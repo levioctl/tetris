@@ -1,11 +1,6 @@
-import random
+"""Tetris logic"""
 
-
-BLOCK_HEIGHT = 50
-BLOCK_WIDTH = 50
-BOARD_HEIGHT_IN_BLOCKS = 16
-BOARD_WIDTH_IN_BLOCKS = 8
-
+import random 
 
 class Block():
 	"""docstring for Rec"""
@@ -17,10 +12,11 @@ class Block():
 
 class TetrisBoard:
 
-	def __init__(self):
+	def __init__(self, num_blocks_in_row, num_blocks_in_col):
 		self.static_blocks = []
 		self._falling_block = None 
-
+		self._num_blocks_in_row = num_blocks_in_row
+		self._num_blocks_in_col = num_blocks_in_col 
 
 	def time_passed(self):
 		"""Retrun True if game is over. Else return False."""
@@ -46,10 +42,10 @@ class TetrisBoard:
 		return self.static_blocks + [self._falling_block]
 
 	def _get_blocks_in_row(self, row):
-		return [block for block in self.static_blocks if block.y == row * BLOCK_WIDTH]
+		return [block for block in self.static_blocks if block.y == row]
 
 	def _generate_block(self):
-		x_values_of_top_row = [BLOCK_WIDTH * block_index for block_index in xrange(8)]
+		x_values_of_top_row = [block_index for block_index in xrange(self._num_blocks_in_row)]
 		x_values_of_top_row_with_blocks = [block.x for block in self.static_blocks if block.y == 0]
 		available_for_new_block = [x for x in x_values_of_top_row if not x in x_values_of_top_row_with_blocks]
 		if available_for_new_block:
@@ -73,9 +69,9 @@ class TetrisBoard:
 	def _move_falling_block(self):
 		
 		are_there_block_under_this_block = any([block for block in self.static_blocks if 
-								self._falling_block.x == block.x and self._falling_block.y + BLOCK_HEIGHT == block.y])
+								self._falling_block.x == block.x and self._falling_block.y + 1 == block.y])
 
-		has_block_reached_the_floor =  self._falling_block.y == (BOARD_HEIGHT_IN_BLOCKS - 1) * BLOCK_HEIGHT
+		has_block_reached_the_floor =  self._falling_block.y == self._num_blocks_in_col - 1
 
 
 		block_cant_keep_falling = are_there_block_under_this_block or has_block_reached_the_floor 
@@ -83,15 +79,15 @@ class TetrisBoard:
 		if  block_cant_keep_falling:
 			return False
 		else:
-			self._falling_block.y += BLOCK_HEIGHT
+			self._falling_block.y += 1
 			return True 
 
 	def _remove_full_rows(self):
-		full_rows = [row for row in xrange(BOARD_HEIGHT_IN_BLOCKS)
-		             if len(self._get_blocks_in_row(row)) == BOARD_WIDTH_IN_BLOCKS]
+		full_rows = [row for row in xrange(self._num_blocks_in_col)
+		             if len(self._get_blocks_in_row(row)) == self._num_blocks_in_row]
 		for row in full_rows:
 			row_blocks = self._get_blocks_in_row(row)
 			self.static_blocks = [block for block in self.static_blocks if block not in row_blocks]
-			higher_blocks = [block for block in self.static_blocks if block.y < row * BLOCK_HEIGHT]
+			higher_blocks = [block for block in self.static_blocks if block.y < row]
 			for block in higher_blocks:
-				block.y += BLOCK_HEIGHT
+				block.y += 1
