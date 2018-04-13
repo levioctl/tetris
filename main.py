@@ -71,7 +71,8 @@ def main():
 			done = True
 		else:
 			for block in tetris.get_blocks():
-				pygame.draw.rect(screen, block.color, [block.x, block.y, 50, 50], 0)
+				pygame.draw.rect(screen, block.color,
+					             [block.x, block.y, tetrisboard.BLOCK_WIDTH, tetrisboard.BLOCK_HEIGHT], 0)
 
 		# --- Go ahead and update the screen with what we've drawn.
 		pygame.display.flip()

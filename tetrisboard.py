@@ -1,6 +1,12 @@
 import random
 
 
+BLOCK_HEIGHT = 50
+BLOCK_WIDTH = 50
+BOARD_HEIGHT_IN_BLOCKS = 16
+BOARD_WIDTH_IN_BLOCKS = 8
+
+
 class Block():
 	"""docstring for Rec"""
 	def __init__(self, x, y, color):
@@ -40,10 +46,10 @@ class TetrisBoard:
 		return self.static_blocks + [self._falling_block]
 
 	def _get_blocks_in_row(self, row):
-		return [block for block in self.static_blocks if block.y == row * 50]
+		return [block for block in self.static_blocks if block.y == row * BLOCK_WIDTH]
 
 	def _generate_block(self):
-		x_values_of_top_row = [50 * block_index for block_index in xrange(8)]
+		x_values_of_top_row = [BLOCK_WIDTH * block_index for block_index in xrange(8)]
 		x_values_of_top_row_with_blocks = [block.x for block in self.static_blocks if block.y == 0]
 		available_for_new_block = [x for x in x_values_of_top_row if not x in x_values_of_top_row_with_blocks]
 		if available_for_new_block:
@@ -67,9 +73,9 @@ class TetrisBoard:
 	def _move_falling_block(self):
 		
 		are_there_block_under_this_block = any([block for block in self.static_blocks if 
-								self._falling_block.x == block.x and self._falling_block.y + 50 == block.y])
+								self._falling_block.x == block.x and self._falling_block.y + BLOCK_HEIGHT == block.y])
 
-		has_block_reached_the_floor =  self._falling_block.y == 750
+		has_block_reached_the_floor =  self._falling_block.y == (BOARD_HEIGHT_IN_BLOCKS - 1) * BLOCK_HEIGHT
 
 
 		block_cant_keep_falling = are_there_block_under_this_block or has_block_reached_the_floor 
@@ -77,14 +83,15 @@ class TetrisBoard:
 		if  block_cant_keep_falling:
 			return False
 		else:
-			self._falling_block.y += 50
+			self._falling_block.y += BLOCK_HEIGHT
 			return True 
 
 	def _remove_full_rows(self):
-		full_rows = [row for row in xrange(16) if len(self._get_blocks_in_row(row)) == 8]
+		full_rows = [row for row in xrange(BOARD_HEIGHT_IN_BLOCKS)
+		             if len(self._get_blocks_in_row(row)) == BOARD_WIDTH_IN_BLOCKS]
 		for row in full_rows:
 			row_blocks = self._get_blocks_in_row(row)
 			self.static_blocks = [block for block in self.static_blocks if block not in row_blocks]
-			higher_blocks = [block for block in self.static_blocks if block.y < row * 50]
+			higher_blocks = [block for block in self.static_blocks if block.y < row * BLOCK_HEIGHT]
 			for block in higher_blocks:
-				block.y += 50
+				block.y += BLOCK_HEIGHT
