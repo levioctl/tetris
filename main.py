@@ -11,7 +11,34 @@ NUM_BLOCKS_IN_COL = 15
 
 WHITE = (255, 255, 255)
 
+
+
+def choose_difficulty():
+	"""Ask the user for difficulty level of the game and return the matching start speed"""
+	print 'Please choose the difficulty level of the game' 
+	print 'Press 1 for easy'
+	print 'Press 2 for hard'
+
+	difficulty = raw_input()
+
+	while difficulty not in ('1', '2'):
+		print 'please type either 1 or 2'
+		difficulty = raw_input()
+
+	if difficulty == 1:
+		start_speed = 1
+	else:
+		start_speed = 4 
+
+	return start_speed
+
+
+
+
+
 def main():
+
+ 	start_speed = choose_difficulty()
 	pygame.init()
 	
 
@@ -57,7 +84,7 @@ def main():
 		pygame.display.flip()
 	 
 		# --- Limit to 60 frames per second
-		clock.tick(60)
+		clock.tick(start_speed)
 	 
 	# Close the window and quit.
 	pygame.quit()
