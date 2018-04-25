@@ -18,7 +18,7 @@ class TetrisBoard:
 		self._num_blocks_in_row = num_blocks_in_row
 		self._num_blocks_in_col = num_blocks_in_col 
 
-	def time_passed(self):
+	def pass_one_time_unit(self):
 		"""Retrun True if game is over. Else return False."""
 		if self._falling_block is None:
 
@@ -26,13 +26,14 @@ class TetrisBoard:
 			game_over = self._falling_block is None
 			if game_over:
 				return True
+			self._remove_full_rows()
+		else:
+			block_can_keep_falling = self._move_falling_block()
+			if not block_can_keep_falling:
+				self.static_blocks.append(self._falling_block)
+				self._falling_block = None
 
-		block_can_keep_falling = self._move_falling_block() 
-		if not block_can_keep_falling:
-			self.static_blocks.append(self._falling_block)
-			self._falling_block = None
-
-		self._remove_full_rows()
+		
 		return False
 
 	def get_blocks(self):

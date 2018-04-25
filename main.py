@@ -70,7 +70,7 @@ def main():
 		# --- Drawing code should go here 
         
 	
-		game_over = tetris.time_passed()
+		game_over = tetris.pass_one_time_unit()
 		if game_over:
 			done = True
 		else:
