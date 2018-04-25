@@ -1,0 +1,6 @@
+to do list:
+- set difficulty of the game: easy/hard
+- set increasing speed of the game 
+- player interaction
+- complex shapes
+- animation when row disappears
