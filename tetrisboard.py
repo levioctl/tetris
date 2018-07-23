@@ -1,6 +1,6 @@
 """Tetris logic"""
 
-import random 
+import random
 
 class Block():
 	"""docstring for Rec"""
@@ -14,27 +14,21 @@ class TetrisBoard:
 
 	def __init__(self, num_blocks_in_row, num_blocks_in_col):
 		self.static_blocks = []
-		self._falling_block = None 
 		self._num_blocks_in_row = num_blocks_in_row
 		self._num_blocks_in_col = num_blocks_in_col 
-
+		self._is_game_over = False
+		self._falling_block = self._generate_block()
+ 
 	def pass_one_time_unit(self):
-		"""Retrun True if game is over. Else return False."""
-		if self._falling_block is None:
-
-			self._falling_block = self._generate_block()
-			game_over = self._falling_block is None
-			if game_over:
-				return True
+		block_can_keep_falling = self._move_falling_block()
+		if not block_can_keep_falling:
+			self.static_blocks.append(self._falling_block)
 			self._remove_full_rows()
-		else:
-			block_can_keep_falling = self._move_falling_block()
-			if not block_can_keep_falling:
-				self.static_blocks.append(self._falling_block)
-				self._falling_block = None
+			self._falling_block = self._generate_block()
+			self._is_game_over = self._falling_block is None
 
-		
-		return False
+	def is_game_over(self):
+		return self._is_game_over
 
 	def get_blocks(self):
 		"""return None if game is over , else returns the blocks on the board"""
@@ -46,20 +40,22 @@ class TetrisBoard:
 		return [block for block in self.static_blocks if block.y == row]
 
 	def _generate_block(self):
+		# Choose X for new block
 		x_values_of_top_row = [block_index for block_index in xrange(self._num_blocks_in_row)]
+		x = random.choice(x_values_of_top_row)
+
+		# Check if game over
 		x_values_of_top_row_with_blocks = [block.x for block in self.static_blocks if block.y == 0]
-		available_for_new_block = [x for x in x_values_of_top_row if not x in x_values_of_top_row_with_blocks]
-		if available_for_new_block:
-			x = random.choice(available_for_new_block)
-			green = random.randint(0,255)
-			red = random.randint(0,255)
-			blue = random.randint(0,255)
-			color = (red, green, blue)
-			return Block(x, 0, color)
-		# Game over
-		return None
+		if x in x_values_of_top_row_with_blocks:
+			return None
 
+		return Block(x, 0, self._generate_random_color())
 
+	def _generate_random_color(self):
+		green = random.randint(0,255)
+		red = random.randint(0,255)
+		blue = random.randint(0,255)
+		return (red, green, blue)		
 
 	def does_block_intersect_with_another_block(self, block):
 		overlapping = [other_block for other_block in self.static_blocks if

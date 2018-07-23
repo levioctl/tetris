@@ -6,8 +6,11 @@ import random
 BLOCK_HEIGHT = 50
 BLOCK_WIDTH = 50
 
-NUM_BLOCKS_IN_ROW = 10
-NUM_BLOCKS_IN_COL = 15
+#NUM_BLOCKS_IN_ROW = 10
+#NUM_BLOCKS_IN_COL = 15
+
+NUM_BLOCKS_IN_ROW = 4
+NUM_BLOCKS_IN_COL = 4
 
 WHITE = (255, 255, 255)
 
@@ -70,8 +73,8 @@ def main():
 		# --- Drawing code should go here 
         
 	
-		game_over = tetris.pass_one_time_unit()
-		if game_over:
+		tetris.pass_one_time_unit()
+		if tetris.is_game_over():
 			done = True
 		else:
 			for block in tetris.get_blocks():
